@@ -1,0 +1,491 @@
+{
+  "name": "EU–Vietnam FTA",
+  "parties": [
+    "EU",
+    "Vietnam"
+  ],
+  "chapters": [
+    {
+      "chapter_code": "61",
+      "title": "KNITTED APPAREL AND ACCESSORIES",
+      "sections": [
+        {
+          "name": "Section A",
+          "hs_scope": [],
+          "rules": [
+            {
+              "rule_id": "1",
+              "rule_type": null,
+              "main_processes": [
+                {
+                  "description": "knitting and making up (including cutting)",
+                  "mandatory": true
+                }
+              ],
+              "thresholds": [],
+              "applies_if_any": false,
+              "exception_clauses": [],
+              "commentary": null
+            },
+            {
+              "rule_id": "Textile-Origin-Rule-001",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [
+                {
+                  "basis": "ex-works price",
+                  "comparator": "≤",
+                  "limit": 8.0,
+                  "unit": "%"
+                }
+              ],
+              "applies_if_any": false,
+              "exception_clauses": [
+                {
+                  "description": "Textile materials, which are not classified within Chapters 50 to 63, may be used freely in the manufacture of textile products, whether or not they contain textiles.",
+                  "thresholds": []
+                }
+              ],
+              "commentary": "Non-originating textile materials are considered originating if their HS code at 2-digit level differs from the final product and their value does not exceed 8% of the ex-works price."
+            },
+            {
+              "rule_id": "textile_rule_001",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [],
+              "applies_if_any": false,
+              "exception_clauses": [
+                {
+                  "description": "Non-originating basic textile materials",
+                  "thresholds": [
+                    {
+                      "basis": "weight",
+                      "comparator": "≤",
+                      "limit": 10.0,
+                      "unit": "%"
+                    }
+                  ]
+                },
+                {
+                  "description": "Non-originating basic textile material 'yarn made of polyurethane segmented with flexible segments of polyether'",
+                  "thresholds": [
+                    {
+                      "basis": "weight",
+                      "comparator": "≤",
+                      "limit": 20.0,
+                      "unit": "%"
+                    }
+                  ]
+                },
+                {
+                  "description": "Non-originating basic textile material 'strip consisting of a core of aluminium foil or of a core of plastic film irrespective of whether or not coated with aluminium powder, of a width not exceeding 5 mm, sandwiched by means of a transparent or coloured adhesive between two layers of plastic film'",
+                  "thresholds": [
+                    {
+                      "basis": "weight",
+                      "comparator": "≤",
+                      "limit": 30.0,
+                      "unit": "%"
+                    }
+                  ]
+                }
+              ],
+              "commentary": null
+            }
+          ]
+        },
+        {
+          "name": "Section B",
+          "hs_scope": [],
+          "rules": [
+            {
+              "rule_id": "custom_rule_001",
+              "rule_type": null,
+              "main_processes": [
+                {
+                  "description": "Spinning of natural and/or man-made staple fibres or extrusion of man-made filament yarn, in each case accompanied by knitting (knitted to shape products)",
+                  "mandatory": false
+                },
+                {
+                  "description": "Dyeing of yarn of natural fibres accompanied by knitting (knitted to shape products)",
+                  "mandatory": false
+                }
+              ],
+              "thresholds": [],
+              "applies_if_any": true,
+              "exception_clauses": [],
+              "commentary": null
+            },
+            {
+              "rule_id": "textile_rule_001",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [],
+              "applies_if_any": false,
+              "exception_clauses": [
+                {
+                  "description": "Non-originating basic textile materials that represent 10% or less of the total weight of all the basic textile materials used should be considered originating.",
+                  "thresholds": [
+                    {
+                      "basis": "weight",
+                      "comparator": "≤",
+                      "limit": 10.0,
+                      "unit": "%"
+                    }
+                  ]
+                },
+                {
+                  "description": "Non-originating basic textile material 'yarn made of polyurethane segmented with flexible segments of polyether' that represent 20% or less of the total weight of all the basic textile materials should be considered originating.",
+                  "thresholds": [
+                    {
+                      "basis": "weight",
+                      "comparator": "≤",
+                      "limit": 20.0,
+                      "unit": "%"
+                    }
+                  ]
+                },
+                {
+                  "description": "Non-originating basic textile material 'strip consisting of a core of aluminium foil or of a core of plastic film irrespective of whether or not coated with aluminium powder, of a width not exceeding 5 mm, sandwiched by means of a transparent or coloured adhesive between two layers of plastic film' that represent 30% or less of the total weight of all the basic textile materials should be considered originating.",
+                  "thresholds": [
+                    {
+                      "basis": "weight",
+                      "comparator": "≤",
+                      "limit": 30.0,
+                      "unit": "%"
+                    }
+                  ]
+                }
+              ],
+              "commentary": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_code": "62",
+      "title": "WOVEN APPAREL AND ACCESSORIES",
+      "sections": [
+        {
+          "name": "General",
+          "hs_scope": [],
+          "rules": [
+            {
+              "rule_id": "1",
+              "rule_type": null,
+              "main_processes": [
+                {
+                  "description": "weaving",
+                  "mandatory": true
+                },
+                {
+                  "description": "making-up (including cutting)",
+                  "mandatory": true
+                }
+              ],
+              "thresholds": [],
+              "applies_if_any": false,
+              "exception_clauses": [],
+              "commentary": null
+            },
+            {
+              "rule_id": "CustomRule001",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [
+                {
+                  "basis": "ex-works price",
+                  "comparator": "≤",
+                  "limit": 10.0,
+                  "unit": "%"
+                }
+              ],
+              "applies_if_any": false,
+              "exception_clauses": [],
+              "commentary": "Non-originating materials used in the production of the good that do not exceed 10% of the Ex works price should be considered originating."
+            },
+            {
+              "rule_id": "1",
+              "rule_type": "PSR",
+              "main_processes": [
+                {
+                  "description": "Making-up preceded by printing accompanied by at least two preparatory or finishing operations (such as scouring, bleaching, mercerising, heat setting, raising, calendering, shrink resistance processing, permanent finishing, decatising, impregnating, mending and burling)",
+                  "mandatory": true
+                }
+              ],
+              "thresholds": [
+                {
+                  "basis": "ex-works price",
+                  "comparator": "≤",
+                  "limit": 47.5,
+                  "unit": "%"
+                }
+              ],
+              "applies_if_any": false,
+              "exception_clauses": [],
+              "commentary": "The value of the unprinted fabric used does not exceed 47.5% of the ex-works price of the product, including all non-originating materials for this calculation."
+            },
+            {
+              "rule_id": "Textile-Origin-Rule-001",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [
+                {
+                  "basis": "ex-works price",
+                  "comparator": "≤",
+                  "limit": 8.0,
+                  "unit": "%"
+                }
+              ],
+              "applies_if_any": false,
+              "exception_clauses": [
+                {
+                  "description": "Textile materials, which are not classified within Chapters 50 to 63, may be used freely in the manufacture of textile products, whether or not they contain textiles.",
+                  "thresholds": []
+                }
+              ],
+              "commentary": "Non-originating textile materials are considered originating if their HS code at 2-digit level differs from the final product and their value does not exceed 8% of the ex-works price."
+            },
+            {
+              "rule_id": "textile_rule_001",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [],
+              "applies_if_any": false,
+              "exception_clauses": [
+                {
+                  "description": "Non-originating basic textile materials that represent 10% or less of the total weight of all the basic textile materials used should be considered originating.",
+                  "thresholds": [
+                    {
+                      "basis": "weight",
+                      "comparator": "≤",
+                      "limit": 10.0,
+                      "unit": "%"
+                    }
+                  ]
+                },
+                {
+                  "description": "Non-originating basic textile material 'yarn made of polyurethane segmented with flexible segments of polyether' that represent 20% or less of the total weight of all the basic textile materials should be considered originating.",
+                  "thresholds": [
+                    {
+                      "basis": "weight",
+                      "comparator": "≤",
+                      "limit": 20.0,
+                      "unit": "%"
+                    }
+                  ]
+                },
+                {
+                  "description": "Non-originating basic textile material 'strip consisting of a core of aluminium foil or of a core of plastic film irrespective of whether or not coated with aluminium powder, of a width not exceeding 5 mm, sandwiched by means of a transparent or coloured adhesive between two layers of plastic film' that represent 30% or less of the total weight of all the basic textile materials should be considered originating.",
+                  "thresholds": [
+                    {
+                      "basis": "weight",
+                      "comparator": "≤",
+                      "limit": 30.0,
+                      "unit": "%"
+                    }
+                  ]
+                }
+              ],
+              "commentary": null
+            }
+          ]
+        },
+        {
+          "name": "Headings 6202, 6204, 6206, 6209 & 6211",
+          "hs_scope": [],
+          "rules": [
+            {
+              "rule_id": "1",
+              "rule_type": null,
+              "main_processes": [
+                {
+                  "description": "weaving",
+                  "mandatory": true
+                },
+                {
+                  "description": "making-up (including cutting)",
+                  "mandatory": true
+                }
+              ],
+              "thresholds": [],
+              "applies_if_any": false,
+              "exception_clauses": [],
+              "commentary": null
+            },
+            {
+              "rule_id": "CustomRule001",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [
+                {
+                  "basis": "ex-works price",
+                  "comparator": "≤",
+                  "limit": 10.0,
+                  "unit": "%"
+                }
+              ],
+              "applies_if_any": false,
+              "exception_clauses": [],
+              "commentary": "Non-originating materials used in the production of the good that do not exceed 10% of the Ex works price should be considered originating."
+            },
+            {
+              "rule_id": "1",
+              "rule_type": null,
+              "main_processes": [
+                {
+                  "description": "Manufacture from unembroidered fabric",
+                  "mandatory": true
+                }
+              ],
+              "thresholds": [
+                {
+                  "basis": "ex-works price",
+                  "comparator": "≤",
+                  "limit": 40.0,
+                  "unit": "%"
+                }
+              ],
+              "applies_if_any": false,
+              "exception_clauses": [],
+              "commentary": null
+            },
+            {
+              "rule_id": "TEXTILE-001",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [],
+              "applies_if_any": false,
+              "exception_clauses": [
+                {
+                  "description": "Non-originating textile materials used in the production should be considered originating if their HS code classification at 2-digit level is other than that of the final product and their value does not exceed 8% of the ex-works price of the product.",
+                  "thresholds": [
+                    {
+                      "basis": "ex-works price",
+                      "comparator": "≤",
+                      "limit": 8.0,
+                      "unit": "%"
+                    }
+                  ]
+                }
+              ],
+              "commentary": "Textile materials not classified within Chapters 50 to 63 may be used freely in the manufacture of textile products, whether or not they contain textiles."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_code": "63",
+      "title": "OTHER TEXTILE + WASTE TEXTILE",
+      "sections": [
+        {
+          "name": "Heading 6307",
+          "hs_scope": [],
+          "rules": [
+            {
+              "rule_id": "1",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [
+                {
+                  "basis": "ex-works price",
+                  "comparator": "≤",
+                  "limit": 40.0,
+                  "unit": "%"
+                }
+              ],
+              "applies_if_any": false,
+              "exception_clauses": [],
+              "commentary": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_code": "64",
+      "title": "FOOTWEAR",
+      "sections": [
+        {
+          "name": "General",
+          "hs_scope": [],
+          "rules": [
+            {
+              "rule_id": "Rule-001",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [],
+              "applies_if_any": false,
+              "exception_clauses": [
+                {
+                  "description": "The non-originating components used in the production of the final product are not assemblies of uppers affixed to inner soles or to other sole components of heading 6406.",
+                  "thresholds": []
+                }
+              ],
+              "commentary": null
+            },
+            {
+              "rule_id": "R1",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [
+                {
+                  "basis": "ex-works price",
+                  "comparator": "≤",
+                  "limit": 10.0,
+                  "unit": "%"
+                }
+              ],
+              "applies_if_any": false,
+              "exception_clauses": [],
+              "commentary": "Non originating materials used in the production of the good that do not exceed 10% of the ex-works price should be considered originating."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter_code": "65",
+      "title": "HEADGEAR",
+      "sections": [
+        {
+          "name": "Headings 6504 & 6505",
+          "hs_scope": [],
+          "rules": [
+            {
+              "rule_id": "unknown",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [],
+              "applies_if_any": false,
+              "exception_clauses": [
+                {
+                  "description": "The non-originating components used in the production of the final product are not classified under those headings.",
+                  "thresholds": []
+                }
+              ],
+              "commentary": null
+            },
+            {
+              "rule_id": "CustomRule001",
+              "rule_type": null,
+              "main_processes": [],
+              "thresholds": [
+                {
+                  "basis": "ex-works price",
+                  "comparator": "≤",
+                  "limit": 10.0,
+                  "unit": "%"
+                }
+              ],
+              "applies_if_any": false,
+              "exception_clauses": [],
+              "commentary": "Non originating materials used in the production of the good that do not exceed 10% of the ex-works price should be considered originating."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
