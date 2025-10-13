@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Progress - FTA Origin Tool{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Analysis Header -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3><i data-feather="activity" class="me-2"></i>Origin Analysis Progress</h3>
+                        <span class="badge bg-{{ 'success' if session.completed else 'warning' }} fs-6">
+                            {{ 'Completed' if session.completed else 'In Progress' }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i data-feather="file" class="me-2"></i>File Information</h6>
+                            <p class="mb-1"><strong>Filename:</strong> {{ session.filename }}</p>
+                            <p class="mb-3"><strong>Upload Date:</strong> {{ session.upload_timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i data-feather="info" class="me-2"></i>Analysis Details</h6>
+                            <p class="mb-1"><strong>Manufacturer:</strong> {{ session.manufacturer or 'Not identified' }}</p>
+                            <p class="mb-3"><strong>Final HS Code:</strong> {{ session.final_hs_code or 'Not determined' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Steps -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4><i data-feather="list" class="me-2"></i>7-Step Workflow Progress</h4>
+                </div>
+                <div class="card-body">
+                    {% if session.analysis_steps %}
+                        {% for step in session.analysis_steps %}
+                        <div class="step-progress mb-3">
+                            <div class="d-flex align-items-start">
+                                <span class="badge bg-success rounded-circle me-3 mt-1">{{ step.step }}</span>
+                                <div class="flex-grow-1">
+                                    <h6>Step {{ step.step }}: {{ step.description }}</h6>
+                                    
+                                    {% if step.step == 1 %}
+                                        <p class="text-muted mb-1">Manufacturer: {{ step.manufacturer }}</p>
+                                        <p class="mb-0">
+                                            <span class="badge bg-{{ 'success' if step.is_vietnamese else 'danger' }}">
+                                                {{ 'Vietnamese (Proceed)' if step.is_vietnamese else 'Non-Vietnamese (Stop)' }}
+                                            </span>
+                                        </p>
+                                    {% elif step.step == 2 %}
+                                        <p class="text-muted mb-1">Final Product HS Code: {{ step.final_hs_code }}</p>
+                                        <span class="badge bg-success">Valid HS Code</span>
+                                    {% elif step.step == 4 %}
+                                        <p class="text-muted mb-1">Non-VN/EU Materials Found: {{ step.materials_found }}</p>
+                                        {% if step.materials %}
+                                            <div class="mt-2">
+                                                {% for material in step.materials[:3] %}
+                                                <span class="badge bg-warning me-1">{{ material.name }} ({{ material.country }})</span>
+                                                {% endfor %}
+                                                {% if step.materials|length > 3 %}
+                                                <span class="text-muted">... and {{ step.materials|length - 3 }} more</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    {% elif step.step == 6 %}
+                                        <p class="text-muted mb-1">Materials under Heading 6406: {{ step.materials_in_6406 }}</p>
+                                        <span class="badge bg-{{ 'warning' if step.materials_in_6406 > 0 else 'success' }}">
+                                            {{ 'Found - Need Cost Check' if step.materials_in_6406 > 0 else 'None Found - Originating' }}
+                                        </span>
+                                    {% elif step.step == 7 %}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p class="text-muted mb-1">6406 Materials Cost: ${{ "%.2f"|format(step.materials_6406_cost) }}</p>
+                                                <p class="text-muted mb-1">Total Cost: ${{ "%.2f"|format(step.total_cost) }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="text-muted mb-1">Percentage: {{ "%.2f"|format(step.percentage) }}%</p>
+                                                <span class="badge bg-{{ 'success' if step.threshold_met else 'danger' }}">
+                                                    {{ '≤10% Threshold Met' if step.threshold_met else '>10% Threshold Exceeded' }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% if not loop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 text-muted">Analysis steps will appear here as processing continues...</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2 mb-4">
+                {% if session.completed %}
+                <a href="{{ url_for('view_results', session_id=session.id) }}" class="btn btn-primary">
+                    <i data-feather="eye" class="me-2"></i>View Results
+                </a>
+                <a href="{{ url_for('download_results', session_id=session.id) }}" class="btn btn-outline-secondary">
+                    <i data-feather="download" class="me-2"></i>Download Report
+                </a>
+                {% else %}
+                <button class="btn btn-secondary" disabled>
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    Processing...
+                </button>
+                {% endif %}
+                <a href="{{ url_for('upload_file') }}" class="btn btn-outline-primary">
+                    <i data-feather="upload" class="me-2"></i>New Analysis
+                </a>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Final Result Card -->
+            {% if session.completed %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i data-feather="check-circle" class="me-2"></i>Final Result</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        {% if session.final_result == 'originating' %}
+                            <i data-feather="check-circle" class="text-success" style="width: 64px; height: 64px;"></i>
+                            <h4 class="text-success mt-2">ORIGINATING</h4>
+                        {% elif session.final_result == 'non_originating' %}
+                            <i data-feather="x-circle" class="text-danger" style="width: 64px; height: 64px;"></i>
+                            <h4 class="text-danger mt-2">NON-ORIGINATING</h4>
+                        {% else %}
+                            <i data-feather="alert-triangle" class="text-warning" style="width: 64px; height: 64px;"></i>
+                            <h4 class="text-warning mt-2">INCOMPLETE</h4>
+                        {% endif %}
+                    </div>
+                    <p class="text-muted">{{ session.result_reason }}</p>
+                    {% if session.completed and session.gemini_explanation %}
+                    <div class="mt-2">
+                        <small class="text-success">
+                            <i data-feather="brain" class="me-1"></i>
+                            AI explanation available in results
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Material Summary -->
+            {% if materials %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i data-feather="package" class="me-2"></i>Material Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h4 class="text-primary">{{ materials|length }}</h4>
+                            <small class="text-muted">Total Materials</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-warning">{{ materials|selectattr('is_problematic')|list|length }}</h4>
+                            <small class="text-muted">Problematic</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Missing Data Alert -->
+            {% if session.missing_fields %}
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0"><i data-feather="alert-triangle" class="me-2"></i>Missing Data Fields</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        {% for field in session.missing_fields %}
+                        <li class="mb-1">
+                            <i data-feather="minus" class="me-2 text-warning"></i>
+                            {{ field|replace('_', ' ')|title }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Auto-refresh for incomplete analysis -->
+{% if not session.completed %}
+<script>
+setTimeout(function() {
+    location.reload();
+}, 5000);
+</script>
+{% endif %}
+{% endblock %}

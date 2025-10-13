@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Costing Sheet - FTA Origin Tool{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i data-feather="upload" class="me-2"></i>Upload Product Costing Sheet</h3>
+                    <p class="text-muted mb-0">Upload your Excel or CSV file for FTA origin determination analysis</p>
+                </div>
+                <div class="card-body">
+                    <!-- Upload Form -->
+                    <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                        <div class="mb-4">
+                            <label for="file" class="form-label">Select File</label>
+                            <input type="file" 
+                                   class="form-control form-control-lg" 
+                                   id="file" 
+                                   name="file" 
+                                   accept=".xlsx,.xls,.csv"
+                                   required>
+                            <div class="form-text">
+                                <i data-feather="info" class="me-1"></i>
+                                Supported formats: Excel (.xlsx, .xls) and CSV (.csv). Maximum size: 16MB
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" id="uploadBtn">
+                                <span id="uploadText">
+                                    <i data-feather="upload" class="me-2"></i>
+                                    Start Analysis
+                                </span>
+                                <span id="uploadingText" style="display: none;">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    Processing...
+                                </span>
+                            </button>
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i data-feather="arrow-left" class="me-2"></i>
+                                Back to Home
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- File Preview (if JavaScript is enabled) -->
+                    <div id="filePreview" class="mt-4" style="display: none;">
+                        <h6><i data-feather="file" class="me-2"></i>File Selected:</h6>
+                        <div class="alert alert-info">
+                            <div id="fileName"></div>
+                            <small id="fileSize" class="text-muted"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requirements Card -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i data-feather="list" class="me-2"></i>Required Data Columns</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Essential Columns:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i data-feather="check-circle" class="me-2 text-success"></i>
+                                    <strong>Manufacturer</strong> - Company name
+                                </li>
+                                <li class="mb-2">
+                                    <i data-feather="check-circle" class="me-2 text-success"></i>
+                                    <strong>Country of Origin</strong> - Material source country
+                                </li>
+                                <li class="mb-2">
+                                    <i data-feather="check-circle" class="me-2 text-success"></i>
+                                    <strong>HS Code</strong> - Harmonized System code
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Cost Information:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i data-feather="check-circle" class="me-2 text-success"></i>
+                                    <strong>Cost per Pair</strong> - Unit cost
+                                </li>
+                                <li class="mb-2">
+                                    <i data-feather="check-circle" class="me-2 text-success"></i>
+                                    <strong>FOB with Tooling</strong> - Total FOB cost
+                                </li>
+                                <li class="mb-2">
+                                    <i data-feather="check-circle" class="me-2 text-success"></i>
+                                    <strong>Material Name</strong> - Component description
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning mt-3">
+                        <i data-feather="alert-triangle" class="me-2"></i>
+                        <strong>Note:</strong> Column names are flexible. The system will attempt to match common variations 
+                        (e.g., "Country", "Origin", "COO" for Country of Origin).
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('file');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const uploadText = document.getElementById('uploadText');
+    const uploadingText = document.getElementById('uploadingText');
+
+    // File selection preview
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            fileName.textContent = file.name;
+            fileSize.textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+            filePreview.style.display = 'block';
+        } else {
+            filePreview.style.display = 'none';
+        }
+    });
+
+    // Form submission handling
+    uploadForm.addEventListener('submit', function(e) {
+        uploadBtn.disabled = true;
+        uploadText.style.display = 'none';
+        uploadingText.style.display = 'inline';
+    });
+
+    // Re-enable button if there's an error (page doesn't redirect)
+    setTimeout(function() {
+        if (uploadBtn.disabled) {
+            uploadBtn.disabled = false;
+            uploadText.style.display = 'inline';
+            uploadingText.style.display = 'none';
+        }
+    }, 5000);
+});
+</script>
+{% endblock %}

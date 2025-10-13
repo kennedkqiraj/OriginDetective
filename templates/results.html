@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Results - FTA Origin Tool{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Results Header -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2><i data-feather="file-text" class="me-2"></i>FTA Origin Determination Results</h2>
+                            <p class="text-muted mb-0">File: {{ session.filename }} | Analysis Date: {{ session.upload_timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <a href="{{ url_for('download_results', session_id=session.id) }}" class="btn btn-primary me-2">
+                                <i data-feather="download" class="me-2"></i>Download Report
+                            </a>
+                            <a href="{{ url_for('upload_file') }}" class="btn btn-outline-secondary">
+                                <i data-feather="upload" class="me-2"></i>New Analysis
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Results Column -->
+        <div class="col-lg-8">
+            <!-- Final Determination -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4><i data-feather="award" class="me-2"></i>Final Determination</h4>
+                </div>
+                <div class="card-body text-center py-4">
+                    {% if session.final_result == 'originating' %}
+                        <i data-feather="check-circle" class="text-success mb-3" style="width: 80px; height: 80px;"></i>
+                        <h3 class="text-success">ORIGINATING</h3>
+                        <p class="lead text-muted">This product qualifies for preferential treatment under the EU-Vietnam FTA</p>
+                    {% elif session.final_result == 'non_originating' %}
+                        <i data-feather="x-circle" class="text-danger mb-3" style="width: 80px; height: 80px;"></i>
+                        <h3 class="text-danger">NON-ORIGINATING</h3>
+                        <p class="lead text-muted">This product does not qualify for preferential treatment</p>
+                    {% else %}
+                        <i data-feather="alert-triangle" class="text-warning mb-3" style="width: 80px; height: 80px;"></i>
+                        <h3 class="text-warning">ANALYSIS INCOMPLETE</h3>
+                        <p class="lead text-muted">Unable to complete origin determination</p>
+                    {% endif %}
+                    
+                    <div class="alert alert-info mt-3">
+                        <strong>Reason:</strong> {{ session.result_reason }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI-Generated Explanation -->
+            {% if session.gemini_explanation %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4><i data-feather="brain" class="me-2"></i>Detailed Explanation</h4>
+                    <small class="text-muted">AI-generated comprehensive analysis</small>
+                </div>
+                <div class="card-body">
+                    <div class="explanation-content">
+                        {{ session.gemini_explanation|replace('\n', '<br>')|safe }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Missing Data Analysis -->
+            {% if session.missing_data_analysis %}
+            <div class="card mb-4 border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i data-feather="alert-triangle" class="me-2"></i>Data Quality Analysis</h5>
+                    <small>AI analysis of missing information impact</small>
+                </div>
+                <div class="card-body">
+                    <div class="missing-data-analysis">
+                        {{ session.missing_data_analysis|replace('\n', '<br>')|safe }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Detailed Analysis Steps -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4><i data-feather="list" class="me-2"></i>Detailed Analysis Steps</h4>
+                </div>
+                <div class="card-body">
+                    {% if session.analysis_steps %}
+                        <div class="timeline">
+                            {% for step in session.analysis_steps %}
+                            <div class="timeline-item mb-4">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <div class="timeline-marker bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            {{ step.step }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-11">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h6 class="card-title">Step {{ step.step }}: {{ step.description }}</h6>
+                                                
+                                                {% if step.step == 1 %}
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p><strong>Manufacturer:</strong> {{ step.manufacturer }}</p>
+                                                            <p><strong>Status:</strong> 
+                                                                <span class="badge bg-{{ 'success' if step.is_vietnamese else 'danger' }}">
+                                                                    {{ 'Vietnamese' if step.is_vietnamese else 'Non-Vietnamese' }}
+                                                                </span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p><strong>Action:</strong> {{ 'Proceed to Step 2' if step.proceed else 'Stop - Non-originating' }}</p>
+                                                        </div>
+                                                    </div>
+                                                {% elif step.step == 2 %}
+                                                    <p><strong>Final Product HS Code:</strong> {{ step.final_hs_code }}</p>
+                                                    <span class="badge bg-success">Valid HS Code Format</span>
+                                                {% elif step.step == 3 %}
+                                                    <p><strong>Applicable FTA Rules:</strong></p>
+                                                    {% if step.applicable_rules and step.applicable_rules.rules %}
+                                                    <ul class="mb-0">
+                                                        {% for rule in step.applicable_rules.rules %}
+                                                        <li>{{ rule }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                    {% endif %}
+                                                {% elif step.step == 4 %}
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p><strong>Materials Found:</strong> {{ step.materials_found }}</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            {% if step.materials %}
+                                                            <p><strong>Countries Identified:</strong></p>
+                                                            {% set countries = step.materials|map(attribute='country')|unique|list %}
+                                                            {% for country in countries %}
+                                                                <span class="badge bg-warning me-1">{{ country }}</span>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                {% elif step.step == 5 %}
+                                                    <p><strong>Materials Validated:</strong> {{ step.materials_checked }}</p>
+                                                {% elif step.step == 6 %}
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p><strong>Materials under Heading 6406:</strong> {{ step.materials_in_6406 }}</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p><strong>Action Required:</strong> 
+                                                                {{ 'Cost analysis needed' if step.materials_in_6406 > 0 else 'Product is originating' }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                {% elif step.step == 7 %}
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <p><strong>6406 Materials Cost:</strong><br>${{ "%.2f"|format(step.materials_6406_cost) }}</p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p><strong>Total FOB Cost:</strong><br>${{ "%.2f"|format(step.total_cost) }}</p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p><strong>Percentage:</strong><br>
+                                                                <span class="badge bg-{{ 'success' if step.threshold_met else 'danger' }} fs-6">
+                                                                    {{ "%.2f"|format(step.percentage) }}%
+                                                                </span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Material Analysis Details -->
+            {% if materials %}
+            <div class="card">
+                <div class="card-header">
+                    <h4><i data-feather="package" class="me-2"></i>Material Analysis Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Material Name</th>
+                                    <th>Country of Origin</th>
+                                    <th>HS Code</th>
+                                    <th>Cost per Pair</th>
+                                    <th>Status</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for material in materials %}
+                                <tr class="{{ 'table-warning' if material.is_problematic else '' }}">
+                                    <td>{{ material.material_name or 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'warning' if material.is_problematic else 'secondary' }}">
+                                            {{ material.country_of_origin or 'Unknown' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <code>{{ material.hs_code or 'N/A' }}</code>
+                                    </td>
+                                    <td>
+                                        {% if material.cost_per_pair %}
+                                            ${{ "%.2f"|format(material.cost_per_pair) }}
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if material.is_problematic %}
+                                            <i data-feather="alert-triangle" class="text-warning me-1"></i>
+                                            Requires Review
+                                        {% else %}
+                                            <i data-feather="check" class="text-success me-1"></i>
+                                            OK
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ material.analysis_notes or 'No additional notes' }}
+                                        </small>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Analysis Summary -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i data-feather="info" class="me-2"></i>Analysis Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center mb-3">
+                        <div class="col-6">
+                            <h4 class="text-primary">{{ session.analysis_steps|length if session.analysis_steps else 0 }}</h4>
+                            <small class="text-muted">Steps Completed</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-warning">{{ materials|length if materials else 0 }}</h4>
+                            <small class="text-muted">Materials Analyzed</small>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="mb-2">
+                        <strong>Manufacturer:</strong><br>
+                        <span class="text-muted">{{ session.manufacturer or 'Not identified' }}</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Final HS Code:</strong><br>
+                        <code>{{ session.final_hs_code or 'Not determined' }}</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost Analysis Chart -->
+            {% if session.analysis_steps and session.analysis_steps|length >= 7 %}
+            {% set cost_step = session.analysis_steps[-1] %}
+            {% if cost_step.step == 7 %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i data-feather="pie-chart" class="me-2"></i>Cost Breakdown</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="costChart" height="200"></canvas>
+                    <div class="mt-3 text-center">
+                        <p class="mb-1">
+                            <strong>Non-originating materials (6406): {{ "%.1f"|format(cost_step.percentage) }}%</strong>
+                        </p>
+                        <span class="badge bg-{{ 'success' if cost_step.threshold_met else 'danger' }}">
+                            {{ 'Within 10% threshold' if cost_step.threshold_met else 'Exceeds 10% threshold' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            <!-- Missing Fields Warning -->
+            {% if session.missing_fields %}
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0"><i data-feather="alert-triangle" class="me-2"></i>Data Quality Issues</h6>
+                </div>
+                <div class="card-body">
+                    <p class="small mb-2">The following fields were missing or incomplete:</p>
+                    <ul class="list-unstyled mb-0">
+                        {% for field in session.missing_fields %}
+                        <li class="mb-1">
+                            <i data-feather="minus" class="me-2 text-warning"></i>
+                            <small>{{ field|replace('_', ' ')|title }}</small>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+{% if session.analysis_steps and session.analysis_steps|length >= 7 %}
+{% set cost_step = session.analysis_steps[-1] %}
+{% if cost_step.step == 7 %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('costChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['6406 Materials', 'Other Materials'],
+            datasets: [{
+                data: [
+                    {{ cost_step.materials_6406_cost }},
+                    {{ cost_step.total_cost - cost_step.materials_6406_cost }}
+                ],
+                backgroundColor: [
+                    '{{ "#dc3545" if not cost_step.threshold_met else "#ffc107" }}',
+                    '#6c757d'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endif %}
+{% endblock %}

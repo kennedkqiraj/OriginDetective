@@ -1,0 +1,274 @@
+/* Custom CSS for FTA Origin Determination Tool */
+
+/* Timeline styles for analysis steps */
+.timeline {
+    position: relative;
+}
+
+.timeline-item {
+    position: relative;
+}
+
+.timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 50px;
+    width: 2px;
+    height: calc(100% - 20px);
+    background-color: var(--bs-border-color);
+    z-index: 1;
+}
+
+.timeline-marker {
+    position: relative;
+    z-index: 2;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* Step progress indicators */
+.step-progress .badge {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+}
+
+/* File upload drag and drop styling */
+.file-drop-zone {
+    border: 2px dashed var(--bs-border-color);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-drop-zone:hover {
+    border-color: var(--bs-primary);
+    background-color: var(--bs-light);
+}
+
+.file-drop-zone.drag-over {
+    border-color: var(--bs-success);
+    background-color: var(--bs-success-bg-subtle);
+}
+
+/* Status badges */
+.status-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Analysis result cards */
+.result-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress indicators */
+.progress-step {
+    position: relative;
+}
+
+.progress-step::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 2rem;
+    height: 2px;
+    background-color: var(--bs-border-color);
+    z-index: 1;
+}
+
+.progress-step:last-child::after {
+    display: none;
+}
+
+.progress-step.completed::after {
+    background-color: var(--bs-success);
+}
+
+/* Material analysis table */
+.material-table {
+    font-size: 0.875rem;
+}
+
+.material-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--bs-border-color);
+}
+
+.material-table .table-warning {
+    --bs-table-bg: var(--bs-warning-bg-subtle);
+}
+
+/* Chart containers */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin: 1rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .timeline-item:not(:last-child)::before {
+        left: 15px;
+    }
+    
+    .timeline-marker {
+        width: 30px;
+        height: 30px;
+        font-size: 0.75rem;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+}
+
+/* Loading animations */
+.analysis-loading {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Custom alert styles */
+.alert-custom {
+    border-left: 4px solid;
+    border-left-color: var(--bs-primary);
+    background-color: var(--bs-primary-bg-subtle);
+    border-color: var(--bs-primary-border-subtle);
+}
+
+/* File preview styling */
+#filePreview {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Cost breakdown styling */
+.cost-breakdown {
+    background: linear-gradient(135deg, var(--bs-light) 0%, var(--bs-body-bg) 100%);
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+/* Navigation enhancements */
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: var(--bs-primary) !important;
+}
+
+/* Button enhancements */
+.btn {
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Card enhancements */
+.card {
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer styling */
+footer {
+    margin-top: auto;
+}
+
+footer h6 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* AI Explanation styling */
+.explanation-content {
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.explanation-content strong {
+    color: var(--bs-emphasis-color);
+}
+
+.missing-data-analysis {
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.explanation-content p,
+.missing-data-analysis p {
+    margin-bottom: 1rem;
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .btn,
+    footer {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #dee2e6 !important;
+        box-shadow: none !important;
+    }
+    
+    .timeline-item:not(:last-child)::before {
+        background-color: #dee2e6 !important;
+    }
+    
+    .explanation-content,
+    .missing-data-analysis {
+        color: #000 !important;
+    }
+}
